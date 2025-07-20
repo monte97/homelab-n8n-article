@@ -11,14 +11,12 @@ tags: ["n8n", "Automazione", "Homelab", "DevOps", "Self-Hosted"]
 categories: ["Tecnologie", "Automazione"]
 ---
 
+## 🔍 Contesto e Motivazioni 🔍
 
-##  🔍 Contesto e Motivazioni 🔍
+n8n è un workflow automation tool open-source, progettato per collegare servizi differenti tramite nodi configurabili. A differenza di alternative cloud-based come Zapier o Make, n8n permette il **self-hosting** completo, offrendo pieno controllo su dati, estensibilità e privacy.  
+Maggiori informazioni sono disponibili nel [sito ufficiale](https://n8n.io/) e nella relativa [documentazione](https://docs.n8n.io/).
 
-
-n8n è un workflow automation tool open-source, pensato per collegare tra loro servizi differenti tramite nodi configurabili. A differenza di alternative cloud-based come Zapier o Make, n8n permette il **self-hosting** completo, offrendo pieno controllo su dati, estensibilità e privacy.  
-Maggiori informazioni sono disponibili nel [sito ufficiale](https://n8n.io/) o nella relativa [documentazione](https://docs.n8n.io/).
-
-L’obiettivo di questo progetto è realizzare un’istanza di n8n **self-hosted** e **automatizzata** all’interno di un ambiente casalingo (homelab), usando container **LXC**, provisioning con **OpenTofu** (fork open-source di Terraform) e configurazione idempotente tramite **Ansible**.
+L'obiettivo di questo progetto è realizzare un'istanza di n8n **self-hosted** e **automatizzata** all'interno di un ambiente casalingo (homelab), utilizzando container **LXC**, provisioning con **OpenTofu** (fork open-source di Terraform) e configurazione idempotente tramite **Ansible**.
 
 Il repository pubblico è disponibile qui:  
 👉 [https://github.com/monte97/homelab-n8n](https://github.com/monte97/homelab-n8n)
@@ -29,36 +27,36 @@ Il repository pubblico è disponibile qui:
 
 ### Scelte architetturali
 
-L’infrastruttura è definita attraverso tre livelli:
+L'infrastruttura è definita attraverso tre livelli:
 
-- **Provisioning**: l'infrastuttura su cui verrà installato il servizio è gestita tramite [OpenTofu](https://opentofu.org/)
-- **Configurazione**: l'impostazione e la configurazione avviene meniante [Ansible](https://www.ansible.com/)
-- **Deploy**: l'applicazione `n8n` viene infine distribuite tramite `docker-compose`, oanch'esso orchestrato da Ansible.
+- **Provisioning**: l'infrastruttura su cui verrà installato il servizio è gestita tramite [OpenTofu](https://opentofu.org/)
+- **Configurazione**: l'impostazione e la configurazione avviene mediante [Ansible](https://www.ansible.com/)
+- **Deploy**: l'applicazione `n8n` viene infine distribuita tramite `docker-compose`, anch'esso orchestrato da Ansible
 
 Questo approccio a livelli permette una chiara separazione delle responsabilità e un ambiente completamente riproducibile.
 
-La scelta di LXC (Linux Containers) come nostra tecnologia di containerizzazione è stata deliberata, motivata dalla sua leggerezza e dalla maggiore trasparenza rispetto a una macchina virtuale (VM) tradizionale. A differenza delle VM, che emulano un intero stack hardware per ogni sistema operativo guest, LXC opera direttamente sul kernel del sistema host, rendendolo molto più efficiente.
+La scelta di LXC (Linux Containers) come tecnologia di containerizzazione è stata deliberata, motivata dalla sua leggerezza e dalla maggiore trasparenza rispetto a una macchina virtuale (VM) tradizionale. A differenza delle VM, che emulano un intero stack hardware per ogni sistema operativo guest, LXC opera direttamente sul kernel del sistema host, rendendolo molto più efficiente.
 
 #### Focus: Container LXC e confronto con Docker
 
 I Linux Containers (LXC) rappresentano un approccio fondamentalmente diverso alla containerizzazione rispetto a Docker. Mentre Docker ha rivoluzionato il deployment delle applicazioni con il paradigma dell'application container, LXC mantiene la filosofia del **system container**: 
 > un ambiente che simula un sistema operativo completo, condividendo il kernel dell'host.
 
-I container LXC, infatti, sono progettati per comportarsi come sistemi Linux completi e indipendenti. Al loro interno troviamo:
+I container LXC sono progettati per comportarsi come sistemi Linux completi e indipendenti. Al loro interno si trovano:
 
 - Un sistema di init (systemd o SysV) che gestisce il ciclo di vita dei servizi
 - Capacità di eseguire servizi multipli simultaneamente
 - Gestione utenti tradizionale con login e sessioni
 - Ambiente persistente e stateful per natura
 
-Docker, al contrario, adotta una filosofia molto diversa, focalizzandosi sull'esecuzione di un unico carico di lavoro. Questo si nota in particolar modo quando prendiamo in considerazione le sue caratteristiche principali:
+Docker, al contrario, adotta una filosofia molto diversa, focalizzandosi sull'esecuzione di un unico carico di lavoro. Questo si nota in particolar modo quando si prendono in considerazione le sue caratteristiche principali:
 
 - Un processo principale per container (idealmente)
 - Architettura stateless e immutable
 - Deployment attraverso layers filesystem
 - Paradigma "cattle, not pets" - i container sono sostituibili
 
-Vale la pena evidenziare come entrambe le tecnologie adottino i medesimi meccanismi per garantire isoalmento e accesso controllato alle risorse: [Namespace e CGroup.](https://montelli.dev/posts/docker-internals/)
+Vale la pena evidenziare come entrambe le tecnologie adottino i medesimi meccanismi per garantire isolamento e accesso controllato alle risorse: [Namespace e CGroup](https://montelli.dev/posts/docker-internals/).
 
 ### Topologia logica
 
@@ -67,6 +65,7 @@ L'istanza n8n è isolata in un container LXC con rete in modalità bridge. Quest
 Tutte le configurazioni, dalla definizione del container all'impostazione dell'applicazione, sono versionate su Git e applicate in modo idempotente tramite Ansible. Ciò significa che i playbook possono essere eseguiti più volte ottenendo sempre lo stesso risultato. Questa pratica assicura che l'intero servizio possa essere ricreato in modo affidabile e completo su qualunque nodo compatibile, con un intervento manuale minimo.
 
 > Todo: inserire immagine per rappresentare la configurazione di rete
+
 ---
 
 ## 🛠️ Provisioning con OpenTofu 🛠️
@@ -78,14 +77,14 @@ OpenTofu è uno strumento open-source per la gestione dell'infrastruttura attrav
 Tradizionalmente, il provisioning dell'infrastruttura avviene attraverso interfacce web, script manuali o procedure documentate che devono essere eseguite passo dopo passo. Questo approccio presenta diversi problemi:
 
 - **Inconsistenza**: Ogni deployment può differire leggermente dal precedente
-- **Mancanza di tracciabilità**: Difficile sapere chi ha fatto cosa e quando
-- **Scalabilità limitata**: Creare 10 server richiede 10 volte il tempo di crearne uno
+- **Mancanza di tracciabilità**: È difficile sapere chi ha fatto cosa e quando
+- **Scalabilità limitata**: Creare 10 server richiede 10 volte il tempo necessario per crearne uno
 - **Disaster recovery complesso**: Ricreare un ambiente richiede tempo e conoscenza tacita
 
 OpenTofu rivoluziona questo processo permettendo di descrivere lo stato desiderato dell'infrastruttura attraverso file di configurazione. Invece di specificare come creare le risorse, si definisce cosa si vuole ottenere:
 
 ```hcl
-# Esempio: definisco COSA voglio, non COME crearlo
+# Esempio: si definisce COSA si vuole, non COME crearlo
 resource "lxc_container" "n8n_prod" {
   name     = "n8n-production"
   image    = "ubuntu/22.04"
@@ -101,7 +100,7 @@ resource "lxc_container" "n8n_prod" {
 
 ### Codifica Infrastruttura
 
-Analizziamo le parti salienti del nostro [`main.tf](https://github.com/monte97/homelab-n8n/blob/master/terraform/main.tf)` per comprendere come OpenTofu traduce le nostre intenzioni in infrastruttura concreta.
+Di seguito vengono analizzate le parti salienti del [`main.tf`](https://github.com/monte97/homelab-n8n/blob/master/terraform/main.tf) per comprendere come OpenTofu traduca le intenzioni in infrastruttura concreta.
 
 #### Configurazione provider
 
@@ -117,8 +116,7 @@ terraform {
 }
 ```
 
-Questa sezione definisce i **requisiti fondamentali** del nostro progetto. Specifichiamo che utilizzeremo il provider Proxmox nella versione 2.9.x (il simbolo `~>` indica compatibilità semantica) e richiediamo OpenTofu/Terraform versione 1.0 o superiore. Questa pratica garantisce **riproducibilità** e **stabilità** negli ambienti di team.
-
+Questa sezione definisce i **requisiti fondamentali** del progetto. Si specifica che verrà utilizzato il provider Proxmox nella versione 2.9.x (il simbolo `~>` indica compatibilità semantica) e si richiede OpenTofu/Terraform versione 1.0 o superiore. Questa pratica garantisce **riproducibilità** e **stabilità** negli ambienti di team.
 
 #### Autenticazione Sicura
 
@@ -150,7 +148,7 @@ resource "proxmox_lxc" "n8n_container" {
 }
 ```
 
-Questa sezione dimostra la **natura dichiarativa** di OpenTofu: non stiamo scrivendo uno script che dice "crea un container, poi assegna memoria, poi configura CPU", ma stiamo definendo lo **stato finale desiderato**. OpenTofu si occuperà di orchestrare le chiamate API necessarie per raggiungere questo stato.
+Questa sezione dimostra la **natura dichiarativa** di OpenTofu: non si sta scrivendo uno script che dice "crea un container, poi assegna memoria, poi configura CPU", ma si sta definendo lo **stato finale desiderato**. OpenTofu si occuperà di orchestrare le chiamate API necessarie per raggiungere questo stato.
 
 #### Gestione Storage Multi-Layer
 
@@ -204,7 +202,7 @@ provisioner "remote-exec" {
 }
 ```
 
-I **provisioner** permettono di eseguire configurazioni post-creazione. In questo caso, prepariamo il sistema con i pacchetti base e abilitiamo SSH. Questo bridge tra infrastruttura e configurazione applicativa è fondamentale per un deployment completo.
+I **provisioner** permettono di eseguire configurazioni post-creazione. In questo caso, il sistema viene preparato con i pacchetti base e si abilita SSH. Questo bridge tra infrastruttura e configurazione applicativa è fondamentale per un deployment completo.
 
 #### Lifecycle Management Intelligente
 
@@ -239,7 +237,7 @@ Ansible rivoluziona questo processo con due caratteristiche fondamentali:
 - **Agentless**: A differenza di altri strumenti di configuration management, Ansible non richiede l'installazione di agent sui sistemi target. Utilizza SSH per Linux e WinRM per Windows, sfruttando protocolli già presenti nei sistemi.
 
 ```yaml
-# Esempio: dichiaro LO STATO DESIDERATO
+# Esempio: si dichiara LO STATO DESIDERATO
 - name: Ensure Docker is installed and running
   package:
     name: docker.io
@@ -251,13 +249,14 @@ Ansible rivoluziona questo processo con due caratteristiche fondamentali:
     state: started
     enabled: yes
 ```
+
 La forza di Ansible sta nella sua capacità di unificare la gestione di tutti questi livelli utilizzando un unico linguaggio e una metodologia coerente. Non importa se si sta configurando il sistema host o l'interno di un container LXC: gli stessi pattern, la stessa sintassi, la stessa filosofia operativa.
 
 Questa uniformità è cruciale in un ambiente production dove la complessità deve essere gestita attraverso strumenti che riducano, non aumentino, il carico cognitivo degli operatori. Ansible trasforma la gestione della configurazione da attività manuale e frammentata a processo automatizzato, versionato e completamente riproducibile.
 
 ### Analisi del Playbook di Configurazione
 
-Esaminiamo le sezioni più significative del nostro playbook Ansible per comprendere come trasformare un container vuoto in un'applicazione production-ready.
+Di seguito vengono esaminate le sezioni più significative del playbook Ansible per comprendere come trasformare un container vuoto in un'applicazione production-ready.
 
 #### Struttura e Variabili Centralizzate
 
@@ -386,14 +385,11 @@ Gli **handler** implementano un sistema di reazioni automatiche: quando il task 
 
 Il task finale implementa **deployment intelligente**: Ansible registra l'output del comando e considera il task "cambiato" solo se effettivamente vengono creati o avviati nuovi container. Questo permette di distinguere tra esecuzioni che modificano lo stato del sistema e quelle che lo trovano già nell'stato desiderato.
 
-Questa uniformità è cruciale in un ambiente production dove la complessità deve essere gestita attraverso strumenti che riducano, non aumentino, il carico cognitivo degli operatori. Ansible trasforma la gestione della configurazione da attività manuale e frammentata a processo automatizzato, versionato e completamente riproducibile.
-
-
 ---
 
 ## 🤖 n8n: deploy e configurazione 🤖
 
-Il deployment di n8n rappresenta l'ultimo livello del nostro stack, dove la semplicità operativa incontra la potenza dell'automazione. Ho scelto di utilizzare Docker Compose per orchestrare il container applicativo, mantenendo coerenza con l'approccio dichiarativo dell'intera infrastruttura.
+Il deployment di n8n rappresenta l'ultimo livello dello stack, dove la semplicità operativa incontra la potenza dell'automazione. È stata scelta l'utilizzo di Docker Compose per orchestrare il container applicativo, mantenendo coerenza con l'approccio dichiarativo dell'intera infrastruttura.
 
 ### Filosofia di Deployment
 
@@ -427,9 +423,9 @@ services:
         volumes:
         - n8n_data:/home/node/.n8n
         
-        # Rimuovere il comando personalizzato - lasciare che il container usi il suo entrypoint di default
+        # Il comando personalizzato è stato rimosso - si lascia che il container usi il suo entrypoint di default
         
-        # Rimuovere health check per ora
+        # Health check rimosso per ora
         # healthcheck:
         #   test: ["CMD-SHELL", "curl -f http://localhost:5678/healthz || exit 1"]
         #   interval: 30s
@@ -437,17 +433,16 @@ services:
         #   retries: 5
         #   start_period: 30s
         
-    volumes:
+volumes:
     n8n_data:
         external: false
 ```
 
 ### Scelte di configurazione
 
-- **Configurazione Minimale**: Ho optato per un approccio "minimal viable configuration" che include solo le variabili d'ambiente strettamente necessarie. Questo riduce la complessità operativa e minimizza i punti di failure, sfruttando i default sensati dell'immagine n8n ufficiale.
+- **Configurazione Minimale**: È stato optato per un approccio "minimal viable configuration" che include solo le variabili d'ambiente strettamente necessarie. Questo riduce la complessità operativa e minimizza i punti di failure, sfruttando i default sensati dell'immagine n8n ufficiale.
 
-- **Named Volumes per la Persistenza**
-L'utilizzo di un named volume Docker (n8n_data) garantisce la persistenza di tutti i dati critici: database SQLite interno, workflow, credenziali e configurazioni. Docker gestisce automaticamente la location fisica, garantendo portabilità e semplificando backup e migrazione.
+- **Named Volumes per la Persistenza**: L'utilizzo di un named volume Docker (n8n_data) garantisce la persistenza di tutti i dati critici: database SQLite interno, workflow, credenziali e configurazioni. Docker gestisce automaticamente la location fisica, garantendo portabilità e semplificando backup e migrazione.
 
 - **Restart Policy**: La policy unless-stopped assicura che il container si riavvii automaticamente in caso di crash o riboot del sistema, mantenendo alta disponibilità senza interventi manuali.
 
