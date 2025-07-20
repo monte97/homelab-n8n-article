@@ -64,11 +64,11 @@ L'istanza n8n è isolata in un container LXC con rete in modalità bridge. Quest
 
 Tutte le configurazioni, dalla definizione del container all'impostazione dell'applicazione, sono versionate su Git e applicate in modo idempotente tramite Ansible. Ciò significa che i playbook possono essere eseguiti più volte ottenendo sempre lo stesso risultato. Questa pratica assicura che l'intero servizio possa essere ricreato in modo affidabile e completo su qualunque nodo compatibile, con un intervento manuale minimo.
 
-> Todo: inserire immagine per rappresentare la configurazione di rete
-
 ---
 
 ## 🛠️ Provisioning con OpenTofu 🛠️
+
+![Tofu Logo](./imgs/tofu_logo2.jpg)
 
 ### Introduzione ad OpenTofu
 
@@ -219,6 +219,8 @@ Le regole di lifecycle prevengono **ricreazioni indesiderate**. Se il template d
 ---
 
 ## 📦 Automazione con Ansible 📦
+
+![Ansible logo](./imgs/Ansible-768x499.jpg)
  
 ### Introduzione ad Ansible
 
