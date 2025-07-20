@@ -449,11 +449,37 @@ volumes:
 - **Variabili Template**: Le variabili Ansible (`{{ n8n_domain }}`, `{{ n8n_port }}`, etc.) permettono di personalizzare la configurazione per diversi ambienti (development, staging, production) utilizzando lo stesso template base.
 
 ---
+
+## 📚 Risorse Utili 📚
+
+- **n8n Official Documentation**: La risorsa principale per ogni dubbio o per esplorare funzionalità avanzate di n8n.
+    - [n8n docs](https://docs.n8n.io/)
+    - [n8n Community Forum](https://community.n8n.io/)
+
+- **OpenTofu Official Documentation**: Essenziale per comprendere a fondo la sintassi HCL e le capacità di provisioning.
+    - [OpenTofu Docs](https://opentofu.org/docs/)
+    - [Proxmox Provider for OpenTofu](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs)
+
+- **Ansible Official Documentation**: Una guida completa per padroneggiare la configuration management e l'orchestrazione.
+    - [Ansible Documentation](https://docs.ansible.com/)
+    - [Ansible Best Practices](https://docs.ansible.com/ansible/latest/playbooks_best_practices.html)
+
+- **Linux Containers (LXC)**: Per chi vuole capire meglio i container di sistema e le loro differenze con Docker.
+    - [LXC Website](https://linuxcontainers.org/)
+    - [LXD Documentation](https://linuxcontainers.org/lxd/docs/) (più orientato a LXD, ma utile per concetti LXC)
+
+- **Docker Documentation**: Indispensabile per comprendere i concetti di base e avanzati dei container applicativi e Docker Compose.
+    - [Docker Docs](https://docs.docker.com/)
+    - [Docker Compose Overview](https://docs.docker.com/compose/)
+
+
+---
+
 <!-- 
 ## ⚡ RUN ⚡
 
 ---
 
-## 📚 Risorse Utili 📚
+
 
 --- -->
