@@ -3,15 +3,15 @@ title: "Deploy Self-Hosted di n8n in Homelab"
 date: 2025-07-20T15:00:00+02:00
 description: Automazione personale con n8n deploy, configurazione e integrazione in un ambiente casalingo
 menu:
-sidebar:
-name:  Homelab n8n
-identifier:  Homelab n8n
-weight: 20
+  sidebar:
+    name:  Homelab n8n
+    identifier:  Homelab n8n
+    weight: 20
 tags: ["n8n", "Automazione", "Homelab", "DevOps", "Self-Hosted"]
 categories: ["Tecnologie", "Automazione"]
 ---
 
-## 🔍 Contesto e Motivazioni 🔍
+## 🔍 Contesto e Motivazioni
 
 n8n è un workflow automation tool open-source, progettato per collegare servizi differenti tramite nodi configurabili. A differenza di alternative cloud-based come Zapier o Make, n8n permette il **self-hosting** completo, offrendo pieno controllo su dati, estensibilità e privacy.  
 Maggiori informazioni sono disponibili nel [sito ufficiale](https://n8n.io/) e nella relativa [documentazione](https://docs.n8n.io/).
@@ -23,7 +23,7 @@ Il repository pubblico è disponibile qui:
 
 ---
 
-## 🏗️ Stack Infrastrutturale 🏗️
+## 🏗️ Stack Infrastrutturale
 
 ### Scelte architetturali
 
@@ -58,7 +58,7 @@ Docker, al contrario, adotta una filosofia molto diversa, focalizzandosi sull'es
 
 Vale la pena evidenziare come entrambe le tecnologie adottino i medesimi meccanismi per garantire isolamento e accesso controllato alle risorse: [Namespace e CGroup](https://montelli.dev/posts/docker-internals/).
 
-### Topologia logica
+#### Topologia logica
 
 L'istanza n8n è isolata in un container LXC con rete in modalità bridge. Questa configurazione collega il container alla rete fisica dell'host tramite un bridge virtuale, assegnandogli un indirizzo IP unico sulla rete locale. Sebbene il container sia pienamente accessibile dalla LAN, non è direttamente esposto su Internet, migliorando la sicurezza.
 
@@ -66,7 +66,7 @@ Tutte le configurazioni, dalla definizione del container all'impostazione dell'a
 
 ---
 
-## 🛠️ Provisioning con OpenTofu 🛠️
+## 🛠️ Provisioning con OpenTofu
 
 ![Tofu Logo](./imgs/tofu_logo2.jpg)
 
@@ -218,7 +218,7 @@ Le regole di lifecycle prevengono **ricreazioni indesiderate**. Se il template d
 
 ---
 
-## 📦 Automazione con Ansible 📦
+## 📦 Automazione con Ansible
 
 ![Ansible logo](./imgs/Ansible-768x499.jpg)
  
@@ -389,7 +389,7 @@ Il task finale implementa **deployment intelligente**: Ansible registra l'output
 
 ---
 
-## 🤖 n8n: deploy e configurazione 🤖
+## 🤖 n8n: deploy e configurazione
 
 Il deployment di n8n rappresenta l'ultimo livello dello stack, dove la semplicità operativa incontra la potenza dell'automazione. È stata scelta l'utilizzo di Docker Compose per orchestrare il container applicativo, mantenendo coerenza con l'approccio dichiarativo dell'intera infrastruttura.
 
@@ -452,7 +452,7 @@ volumes:
 
 ---
 
-## 📚 Risorse Utili 📚
+## 📚 Risorse Utili
 
 - **n8n Official Documentation**: La risorsa principale per ogni dubbio o per esplorare funzionalità avanzate di n8n.
     - [n8n docs](https://docs.n8n.io/)
